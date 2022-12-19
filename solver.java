@@ -1,7 +1,12 @@
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Map.Entry;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class solver{
@@ -12,7 +17,9 @@ public class solver{
 
         String ciphertext = input.nextLine();
 
-        System.out.println(Arrays.toString(ngrams(ciphertext, 3)));
+        System.out.println(Arrays.toString(ngrams(ciphertext, 2)));
+
+        input.close();
 
     }
 
@@ -36,17 +43,42 @@ public class solver{
 
         }
 
-        Set<String> ngramSet = ngramMap.keySet();
+        Map<String, Integer> ngramMap2 = MapUtil.sortByValue(ngramMap);
+
+        Set<String> ngramSet = ngramMap2.keySet();
 
         String[] ngrams = ngramSet.toArray(new String[ngramSet.size()]);
 
-        Arrays.sort(ngrams);
+        //Arrays.sort(ngrams);
 
 
         return ngrams;
 
     }
 
+    public class MapUtil {
+
+        public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+
+            List<Entry<K, V>> list = new ArrayList<>(map.entrySet());
+
+            list.sort(Entry.<K, V>comparingByValue().reversed());
+    
+            Map<K, V> result = new LinkedHashMap<>();
+
+            for (Entry<K, V> entry : list) {
+
+                result.put(entry.getKey(), entry.getValue());
+
+            }
+    
+            return result;
+        }
+        
+    }
+    
+
 
 
 }
+
