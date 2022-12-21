@@ -21,17 +21,23 @@ public class solver{
         ' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
         'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
 
-    }
+    };
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws FileNotFoundException{
 
-        Scanner input = new Scanner(System.in);
+        // Scanner input = new Scanner(System.in);
 
-        String ciphertext = input.nextLine();
+        // String ciphertext = input.nextLine();
 
-        System.out.println(Arrays.toString(ngrams(ciphertext, 2)));
+        // System.out.println(Arrays.toString(ngrams(ciphertext, 2)));
 
-        input.close();
+        // input.close();
+
+        BigramTable table = bigramize("C:\\Users\\joshu\\Documents\\GitHub\\cryptosolver\\src\\text.txt");
+
+        System.out.println(table);
+
+        System.out.println(table.evaluate());
 
     }
 
@@ -49,6 +55,8 @@ public class solver{
                 ngram = ngram + text.charAt(i + j);
 
             }
+
+            ngram = ngram.toLowerCase();
  
             //if the map contains the ngram already, increment frequency. else, assign a new key/value in the map of freq 1
             ngramMap.put(ngram, ngramMap.containsKey(ngram) ? ngramMap.get(ngram) + 1 : 1);
@@ -86,9 +94,11 @@ public class solver{
 
                 char char2 = line.charAt(i + 1);
 
-                String bigram = char1 + char2 + "";
+                String bigram = ("" + char1 + char2).toLowerCase();
 
-                bigramMap.put(bigram, bigramMap.containsKey(bigram) ? bigramMap.get(bigram) + 1 : 1);
+                System.out.println(bigram);
+
+                bigramMap.put(bigram, bigramMap.get(bigram) + 1);
 
                 count++;
 
@@ -98,7 +108,7 @@ public class solver{
 
         int index = 0;
 
-        String[] keys = (String[]) bigramMap.keySet().toArray(); 
+        String[] keys = bigramMap.keySet().toArray(new String[0]); 
 
         double[][] freq = new double[27][27];
 
@@ -130,6 +140,7 @@ public class solver{
 
     }
 
+    //function for creating a returning a default treemap consisting of all the possible bigrams as keys and 0 as a frequency value. 
     private static Map<String, Integer> defaultMap(){
 
         TreeMap<String, Integer> map = new TreeMap<>();
@@ -138,15 +149,30 @@ public class solver{
 
             for(int j = 0; j < alphabet.length; j++){
 
-                map.put(alphabet[i] + alphabet[j] + "", 0);
+                map.put("" + alphabet[i] + alphabet[j], 0);
+                System.out.println(j);
 
             }
 
         }
 
+        System.out.println(map.size());
+
         return map;
 
     }
+
+
+
+
+
+
+
+
+
+
+
+    
 
     public class MapUtil {
 
