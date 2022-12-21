@@ -1,3 +1,5 @@
+package src;
+
 /******************************************************************************
  *  Compilation:  javac Matrix.java
  *  Execution:    java Matrix
@@ -40,6 +42,12 @@ final public class Matrix {
         return A;
     }
 
+    public double[][] getArray(){
+
+        return data;
+
+    }
+
     // create and return the N-by-N identity matrix
     public static Matrix identity(int N) {
         Matrix I = new Matrix(N, N);
@@ -49,11 +57,32 @@ final public class Matrix {
     }
 
     // swap rows i and j
-    private void swap(int i, int j) {
+    public void swapRows(int i, int j) {
         double[] temp = data[i];
         data[i] = data[j];
         data[j] = temp;
     }
+
+    public void swapCols(int i, int j){
+
+        for(int z = 0; z < data.length; z++){
+
+            swap(data[z], i, j);
+
+        }
+
+    }
+
+    private void swap(double[] row, int i, int j){
+
+        double temp = row[i];
+
+        row[i] = row[j];
+
+        row[j] = temp;
+
+    }
+
 
     // create and return the transpose of the invoking matrix
     public Matrix transpose() {
@@ -127,8 +156,8 @@ final public class Matrix {
             for (int j = i + 1; j < N; j++)
                 if (Math.abs(A.data[j][i]) > Math.abs(A.data[max][i]))
                     max = j;
-            A.swap(i, max);
-            b.swap(i, max);
+            A.swapRows(i, max);
+            b.swapRows(i, max);
 
             // singular
             if (A.data[i][i] == 0.0) throw new RuntimeException("Matrix is singular.");
@@ -158,12 +187,4 @@ final public class Matrix {
         return x;
 
     }
-
-    // print matrix to standard output
-    public void show() {
-        for (int i = 0; i < M; i++) {
-            for (int j = 0; j < N; j++)
-                StdOut.printf("%9.4f ", data[i][j]);
-            StdOut.println();
-        }
-    }
+}

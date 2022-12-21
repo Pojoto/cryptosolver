@@ -1,11 +1,16 @@
 
+package src;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -53,6 +58,73 @@ public class solver{
 
 
         return ngrams;
+
+    }
+
+    public static BigramTable bigramize(String filename) throws FileNotFoundException{
+
+        TreeMap<String, Double> bigramMap = new TreeMap<>();
+
+        int count = 0;
+
+        Scanner lineReader = new Scanner(new File(filename));
+
+        while(lineReader.hasNextLine()){
+
+            String line = lineReader.nextLine();
+
+            for(int i = 0; i < line.length() - 1; i++){
+
+                char char1 = line.charAt(i);
+
+                char char2 = line.charAt(i + 1);
+
+                String bigram = char1 + char2 + "";
+
+                bigramMap.put(bigram, bigramMap.containsKey(bigram) ? bigramMap.get(bigram) + 1 : 1);
+
+                count++;
+
+            }
+
+
+
+
+
+        }
+
+        for(String key : bigramMap.keySet()){
+
+            bigramMap.put(key, bigramMap.get(key) / count);
+
+
+        }
+
+        for(int i = 0; i < bigramMap.size(); i++){
+
+
+
+        }
+
+        double[][] freq = new double[27][27];
+
+        for(int i = 0; i < freq.length; i++){
+
+            for(int j = 0; j < freq[i].length; j++){
+
+
+
+            }
+
+        }
+
+        //plan is to preload a treemap of all bigrams possible, each with default 0 frequency. 
+        //then we analyze text, looping through each bigram and updating the corresponding tree map entry values
+        //, the bigram frequency. 
+        //after all the characters in the text are analyzed, the hash map can be mapped to a 2d array consisting of the 
+        //frequencies of the bigrams in order. any bigrams not found in text will have the default 0 frequency from the hash map
+        //now the 2d array can be made a matrix and then made a bigram table object. 
+        //note that bigram frequencies must be divided by total count of bigrams in the text.
 
     }
 
