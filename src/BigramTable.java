@@ -16,6 +16,28 @@ public class BigramTable {
 
     }
 
+    public BigramTable(Matrix m){
+
+        matrix = m;
+
+        key = new char[27];
+
+
+
+    }
+
+    public char[] getKey(){
+
+        return key;
+
+    }
+
+    public Matrix geMatrix(){
+
+        return matrix;
+
+    }
+
     public double evaluate(){
 
         double sum = 0;

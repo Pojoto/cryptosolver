@@ -16,6 +16,13 @@ import java.util.Arrays;
 
 public class solver{
 
+    public static char[] alphabet = {
+
+        ' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+
+    }
+
     public static void main(String[] args){
 
         Scanner input = new Scanner(System.in);
@@ -63,7 +70,7 @@ public class solver{
 
     public static BigramTable bigramize(String filename) throws FileNotFoundException{
 
-        TreeMap<String, Double> bigramMap = new TreeMap<>();
+        Map<String, Integer> bigramMap = defaultMap();
 
         int count = 0;
 
@@ -86,25 +93,12 @@ public class solver{
                 count++;
 
             }
-
-
-
-
-
+            
         }
 
-        for(String key : bigramMap.keySet()){
+        int index = 0;
 
-            bigramMap.put(key, bigramMap.get(key) / count);
-
-
-        }
-
-        for(int i = 0; i < bigramMap.size(); i++){
-
-
-
-        }
+        String[] keys = (String[]) bigramMap.keySet().toArray(); 
 
         double[][] freq = new double[27][27];
 
@@ -112,11 +106,19 @@ public class solver{
 
             for(int j = 0; j < freq[i].length; j++){
 
+                freq[i][j] = bigramMap.get(keys[index]) / (double) count;
 
+                index++;
 
             }
 
         }
+
+        Matrix bigramMatrix = new Matrix(freq);
+
+        BigramTable table = new BigramTable(bigramMatrix);
+
+        return table;
 
         //plan is to preload a treemap of all bigrams possible, each with default 0 frequency. 
         //then we analyze text, looping through each bigram and updating the corresponding tree map entry values
@@ -125,6 +127,24 @@ public class solver{
         //frequencies of the bigrams in order. any bigrams not found in text will have the default 0 frequency from the hash map
         //now the 2d array can be made a matrix and then made a bigram table object. 
         //note that bigram frequencies must be divided by total count of bigrams in the text.
+
+    }
+
+    private static Map<String, Integer> defaultMap(){
+
+        TreeMap<String, Integer> map = new TreeMap<>();
+
+        for(int i = 0; i < alphabet.length; i++){
+
+            for(int j = 0; j < alphabet.length; j++){
+
+                map.put(alphabet[i] + alphabet[j] + "", 0);
+
+            }
+
+        }
+
+        return map;
 
     }
 
