@@ -33,7 +33,7 @@ public class solver{
 
         // input.close();
 
-        BigramTable table = bigramize("C:\\Users\\joshu\\Documents\\GitHub\\cryptosolver\\src\\text.txt");
+        BigramTable table = bigramize("C:\\Users\\joshu\\Documents\\GitHub\\cryptosolver\\src\\training.txt");
 
         System.out.println(table);
 
@@ -140,8 +140,32 @@ public class solver{
 
     }
 
+    public static double[][] mapToArray(Map<String, Integer> map, int count){
+
+        int index = 0;
+
+        String[] keys = map.keySet().toArray(new String[0]); 
+
+        double[][] freq = new double[27][27];
+
+        for(int i = 0; i < freq.length; i++){
+
+            for(int j = 0; j < freq[i].length; j++){
+
+                freq[i][j] = map.get(keys[index]) / (double) count;
+
+                index++;
+
+            }
+
+        }
+
+        return freq;
+
+    }
+
     //function for creating a returning a default treemap consisting of all the possible bigrams as keys and 0 as a frequency value. 
-    private static Map<String, Integer> defaultMap(){
+    public static Map<String, Integer> defaultMap(){
 
         TreeMap<String, Integer> map = new TreeMap<>();
 

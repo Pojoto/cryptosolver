@@ -5,12 +5,18 @@ public class BigramTable {
 
     private char[] key;
 
+    private double[][] trainingTable;
+
+    private final String TRAINING_TEXT_PATH = "C:\\Users\\joshu\\Documents\\GitHub\\cryptosolver\\src\\training.txt";
+
     
     public BigramTable(){
 
         matrix = new Matrix(27, 27);
 
         key = new char[27];
+
+        trainingTable(TRAINING_TEXT_PATH);
 
 
 
@@ -28,6 +34,8 @@ public class BigramTable {
         //     'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
 
         // };
+
+        trainingTable(TRAINING_TEXT_PATH);
 
 
 
@@ -67,7 +75,56 @@ public class BigramTable {
 
     }
 
-    public static double[][] trainingTable(){
+    public static double[][] trainingTable(String path){
+
+        Map<String, Integer> bigramMap = defaultMap();
+
+        int count = 0;
+
+        Scanner lineReader = new Scanner(new File(filename));
+
+        while(lineReader.hasNextLine()){
+
+            String line = lineReader.nextLine();
+
+            for(int i = 0; i < line.length() - 1; i++){
+
+                char char1 = line.charAt(i);
+
+                char char2 = line.charAt(i + 1);
+
+                String bigram = ("" + char1 + char2).toLowerCase();
+
+                System.out.println(bigram);
+
+                bigramMap.put(bigram, bigramMap.get(bigram) + 1);
+
+                count++;
+
+            }
+            
+        }
+
+        int index = 0;
+
+        String[] keys = bigramMap.keySet().toArray(new String[0]); 
+
+        double[][] freq = new double[27][27];
+
+        for(int i = 0; i < freq.length; i++){
+
+            for(int j = 0; j < freq[i].length; j++){
+
+                freq[i][j] = bigramMap.get(keys[index]) / (double) count;
+
+                index++;
+
+            }
+
+        }
+
+        
+
 
         double[][] trainingTable = new double[27][27];
 
