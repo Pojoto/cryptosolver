@@ -1,4 +1,9 @@
 package src;
+
+import java.io.File;
+import java.util.Map;
+import java.util.Scanner;
+
 public class BigramTable {
     
     private Matrix matrix;
@@ -7,7 +12,7 @@ public class BigramTable {
 
     private double[][] trainingTable;
 
-    private final String TRAINING_TEXT_PATH = "C:\\Users\\joshu\\Documents\\GitHub\\cryptosolver\\src\\training.txt";
+    private final File TRAINING_FILE = new File("C:\\Users\\joshu\\Documents\\GitHub\\cryptosolver\\src\\training.txt");
 
     
     public BigramTable(){
@@ -75,13 +80,13 @@ public class BigramTable {
 
     }
 
-    public static double[][] trainingTable(String path){
+    public static double[][] trainingTable(File file){
 
         Map<String, Integer> bigramMap = defaultMap();
 
         int count = 0;
 
-        Scanner lineReader = new Scanner(new File(filename));
+        Scanner lineReader = new Scanner(file);
 
         while(lineReader.hasNextLine()){
 
