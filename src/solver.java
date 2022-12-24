@@ -34,6 +34,15 @@ public class Solver{
     }
 
 
+    public void solve(File cipherFile) throws FileNotFoundException{
+
+        BigramTable cipherTable = bigramize(cipherFile);
+
+        
+
+    }
+
+
     public double evaluate(File cipherFile) throws FileNotFoundException{
 
         double sum = 0;
