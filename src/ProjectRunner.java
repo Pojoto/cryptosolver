@@ -14,7 +14,9 @@ public class ProjectRunner {
 
         File ciphertext = new File("src\\text.txt");
 
-        solver.evaluate(ciphertext);
+        System.out.println(solver.evaluate(ciphertext));
+
+        
 
     }
 

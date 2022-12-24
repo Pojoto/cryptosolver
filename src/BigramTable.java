@@ -10,8 +10,6 @@ public class BigramTable {
 
     private char[] key;
 
-    private double[][] trainingTable;
-    
     public BigramTable(){
 
         matrix = new Matrix(27, 27);

@@ -33,6 +33,35 @@ public class Solver{
 
     }
 
+
+    public double evaluate(File cipherFile) throws FileNotFoundException{
+
+        double sum = 0;
+
+        BigramTable cipherTable = bigramize(cipherFile);
+
+        double[][] cipherArray = cipherTable.geMatrix().getArray();
+
+        double[][] trainingArray = trainingTable.geMatrix().getArray();
+
+        for(int i = 0; i < 27; i++){
+
+            for(int j = 0; j < 27; j++){
+
+                double difference = Math.abs(trainingArray[i][j] - cipherArray[i][j]);
+
+                //System.out.println(Math.log(difference));
+
+                sum += difference;//Math.log(difference);
+
+            }
+
+        }
+
+        return sum;
+
+    }
+
     public BigramTable bigramize(File file) throws FileNotFoundException{
 
         Map<String, Integer> bigramMap = defaultMap();
@@ -52,8 +81,6 @@ public class Solver{
                 char char2 = line.charAt(i + 1);
 
                 String bigram = ("" + char1 + char2).toLowerCase();
-
-                System.out.println(bigram);
 
                 bigramMap.put(bigram, bigramMap.get(bigram) + 1);
 
@@ -100,33 +127,6 @@ public class Solver{
     }
 
 
-    public double evaluate(File cipherFile) throws FileNotFoundException{
-
-        double sum = 0;
-
-        BigramTable cipherTable = bigramize(cipherFile);
-
-        double[][] cipherArray = cipherTable.geMatrix().getArray();
-
-        double[][] trainingArray = trainingTable.geMatrix().getArray();
-
-        for(int i = 0; i < 27; i++){
-
-            for(int j = 0; j < 27; j++){
-
-                double difference = Math.abs(trainingArray[i][j] - cipherArray[i][j]);
-
-                sum += Math.log(difference);
-
-            }
-
-        }
-
-        return sum;
-
-    }
-
-
     //function for creating a returning a default treemap consisting of all the possible bigrams as keys and 0 as a frequency value. 
     public static Map<String, Integer> defaultMap(){
 
@@ -137,13 +137,10 @@ public class Solver{
             for(int j = 0; j < alphabet.length; j++){
 
                 map.put("" + alphabet[i] + alphabet[j], 0);
-                System.out.println(j);
 
             }
 
         }
-
-        System.out.println(map.size());
 
         return map;
 
