@@ -14,7 +14,9 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class solver{
+public class Solver{
+
+    private BigramTable trainingTable;
 
     public static char[] alphabet = {
 
@@ -23,66 +25,21 @@ public class solver{
 
     };
 
-    public static void main(String[] args) throws FileNotFoundException{
 
-        // Scanner input = new Scanner(System.in);
 
-        // String ciphertext = input.nextLine();
+    public Solver(File trainingFile) throws FileNotFoundException{ 
 
-        // System.out.println(Arrays.toString(ngrams(ciphertext, 2)));
-
-        // input.close();
-
-        BigramTable table = bigramize("C:\\Users\\joshu\\Documents\\GitHub\\cryptosolver\\src\\training.txt");
-
-        System.out.println(table);
-
-        System.out.println(table.evaluate());
+        trainingTable = bigramize(trainingFile);
 
     }
 
-
-    public static String[] ngrams(String text, int n){
-
-        HashMap<String, Integer> ngramMap = new HashMap<String, Integer>();
-
-        for(int i = 0; i < text.length() - n + 1; i++){
-
-            String ngram = "";
-
-            for(int j = 0; j < n; j++){
-
-                ngram = ngram + text.charAt(i + j);
-
-            }
-
-            ngram = ngram.toLowerCase();
- 
-            //if the map contains the ngram already, increment frequency. else, assign a new key/value in the map of freq 1
-            ngramMap.put(ngram, ngramMap.containsKey(ngram) ? ngramMap.get(ngram) + 1 : 1);
-
-        }
-
-        Map<String, Integer> ngramMap2 = MapUtil.sortByValue(ngramMap);
-
-        Set<String> ngramSet = ngramMap2.keySet();
-
-        String[] ngrams = ngramSet.toArray(new String[ngramSet.size()]);
-
-        //Arrays.sort(ngrams);
-
-
-        return ngrams;
-
-    }
-
-    public static BigramTable bigramize(String filename) throws FileNotFoundException{
+    public BigramTable bigramize(File file) throws FileNotFoundException{
 
         Map<String, Integer> bigramMap = defaultMap();
 
         int count = 0;
 
-        Scanner lineReader = new Scanner(new File(filename));
+        Scanner lineReader = new Scanner(file);
 
         while(lineReader.hasNextLine()){
 
@@ -105,6 +62,8 @@ public class solver{
             }
             
         }
+
+        lineReader.close();
 
         int index = 0;
 
@@ -140,29 +99,33 @@ public class solver{
 
     }
 
-    public static double[][] mapToArray(Map<String, Integer> map, int count){
 
-        int index = 0;
+    public double evaluate(File cipherFile) throws FileNotFoundException{
 
-        String[] keys = map.keySet().toArray(new String[0]); 
+        double sum = 0;
 
-        double[][] freq = new double[27][27];
+        BigramTable cipherTable = bigramize(cipherFile);
 
-        for(int i = 0; i < freq.length; i++){
+        double[][] cipherArray = cipherTable.geMatrix().getArray();
 
-            for(int j = 0; j < freq[i].length; j++){
+        double[][] trainingArray = trainingTable.geMatrix().getArray();
 
-                freq[i][j] = map.get(keys[index]) / (double) count;
+        for(int i = 0; i < 27; i++){
 
-                index++;
+            for(int j = 0; j < 27; j++){
+
+                double difference = Math.abs(trainingArray[i][j] - cipherArray[i][j]);
+
+                sum += Math.log(difference);
 
             }
 
         }
 
-        return freq;
+        return sum;
 
     }
+
 
     //function for creating a returning a default treemap consisting of all the possible bigrams as keys and 0 as a frequency value. 
     public static Map<String, Integer> defaultMap(){
@@ -189,6 +152,44 @@ public class solver{
 
 
 
+
+
+
+
+
+    public static String[] ngrams(String text, int n){
+
+        HashMap<String, Integer> ngramMap = new HashMap<String, Integer>();
+
+        for(int i = 0; i < text.length() - n + 1; i++){
+
+            String ngram = "";
+
+            for(int j = 0; j < n; j++){
+
+                ngram = ngram + text.charAt(i + j);
+
+            }
+
+            ngram = ngram.toLowerCase();
+ 
+            //if the map contains the ngram already, increment frequency. else, assign a new key/value in the map of freq 1
+            ngramMap.put(ngram, ngramMap.containsKey(ngram) ? ngramMap.get(ngram) + 1 : 1);
+
+        }
+
+        Map<String, Integer> ngramMap2 = MapUtil.sortByValue(ngramMap);
+
+        Set<String> ngramSet = ngramMap2.keySet();
+
+        String[] ngrams = ngramSet.toArray(new String[ngramSet.size()]);
+
+        //Arrays.sort(ngrams);
+
+
+        return ngrams;
+
+    }
 
 
 
