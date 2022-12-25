@@ -18,9 +18,9 @@ public class ProjectRunner {
 
         System.out.println(solver.evaluate(table));
 
-        char[] key = solver.solve(ciphertext);
+        //char[] key = solver.solve(ciphertext);
 
-        System.out.println(key);
+        System.out.println(solver.solve(ciphertext));
 
         
 

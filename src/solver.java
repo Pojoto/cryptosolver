@@ -34,8 +34,34 @@ public class Solver{
 
     }
 
+    private String decipher(File cipherFile, HashMap<Character, Character> key) throws FileNotFoundException{
 
-    public char[] solve(File cipherFile) throws FileNotFoundException{
+        StringBuilder builder = new StringBuilder();
+        
+        Scanner lineReader = new Scanner(cipherFile);
+
+        while(lineReader.hasNextLine()){
+
+            String line = lineReader.nextLine();
+
+            for(int i = 0; i < line.length(); i++){
+
+                char token = Character.toLowerCase(line.charAt(i));
+
+                builder.append(key.get(token));
+
+            }
+            
+        }
+
+        lineReader.close();
+
+        return builder.toString();
+
+    }
+
+
+    public String solve(File cipherFile) throws FileNotFoundException{
 
         int count = 0;
 
@@ -82,7 +108,7 @@ public class Solver{
 
         System.out.println(count);
 
-        return cipherTable.getKey();
+        return decipher(cipherFile, cipherTable.getKey());
 
     }
 

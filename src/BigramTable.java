@@ -1,6 +1,7 @@
 package src;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -8,13 +9,13 @@ public class BigramTable {
     
     private double[][] matrix;
 
-    private char[] key;
+    private HashMap<Character, Character> key;
 
     public BigramTable(){
 
-        matrix = new double[27][27];
+        matrix = new double[Solver.alphabet.length][Solver.alphabet.length];
 
-        key = new char[27];
+        key = new HashMap<Character, Character>();
 
     }
 
@@ -22,16 +23,18 @@ public class BigramTable {
 
         this.matrix = matrix;
 
-        key = new char[]{
-            
-            ' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+        key = new HashMap<Character, Character>();
 
-        };
+        for(int i = 0; i < Solver.alphabet.length; i++){
+
+            key.put(Solver.alphabet[i], Solver.alphabet[i]);
+
+
+        }
 
     }
 
-    public char[] getKey(){
+    public HashMap<Character, Character> getKey(){
 
         return key;
 
@@ -48,9 +51,9 @@ public class BigramTable {
         swapRows(i, j);
         swapCols(i, j);
 
-        char temp = key[i];
-        key[i] = key[j];
-        key[j] = temp;
+        char temp = key.get(Solver.alphabet[i]);
+        key.put(Solver.alphabet[i], key.get(Solver.alphabet[j]));
+        key.put(Solver.alphabet[j], temp);
 
     }
 
@@ -82,11 +85,13 @@ public class BigramTable {
 
         StringBuilder builder = new StringBuilder();
 
+        Character[] keyArray = key.keySet().toArray(new Character[0]);
+
         builder.append(" ");
 
-        for(int i = 0; i < key.length; i++){
+        for(int i = 0; i < keyArray.length; i++){
 
-            builder.append(key[i]);
+            builder.append(keyArray[i]);
             builder.append("    ");
 
 
@@ -94,12 +99,12 @@ public class BigramTable {
 
         builder.append("\n");
 
-        for(int i = 0; i < key.length; i++){
+        for(int i = 0; i < keyArray.length; i++){
 
-            builder.append(key[i]);
+            builder.append(keyArray[i]);
             builder.append(" ");
 
-            for(int j = 0; j < key.length; j++){
+            for(int j = 0; j < keyArray.length; j++){
 
                 builder.append(round(matrix[i][j], 2));
                 builder.append(" ");
