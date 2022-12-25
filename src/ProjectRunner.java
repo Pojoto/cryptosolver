@@ -14,7 +14,13 @@ public class ProjectRunner {
 
         File ciphertext = new File("src\\text.txt");
 
-        System.out.println(solver.evaluate(ciphertext));
+        BigramTable table = solver.bigramize(ciphertext);
+
+        System.out.println(solver.evaluate(table));
+
+        char[] key = solver.solve(ciphertext);
+
+        System.out.println(key);
 
         
 

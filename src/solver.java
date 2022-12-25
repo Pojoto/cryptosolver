@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -34,24 +35,65 @@ public class Solver{
     }
 
 
-    public void solve(File cipherFile) throws FileNotFoundException{
+    public char[] solve(File cipherFile) throws FileNotFoundException{
+
+        int count = 0;
 
         BigramTable cipherTable = bigramize(cipherFile);
 
-        
+        double minEvaluation = evaluate(cipherTable);
+
+        for(int i = 0; i < alphabet.length; i++){
+
+            for(int j = i + 1; j < alphabet.length; j++){
+
+                count++;
+
+                cipherTable.swap(i, j);
+
+                double currEvaluation = evaluate(cipherTable);    
+
+
+                if(currEvaluation < minEvaluation){
+
+                    minEvaluation = currEvaluation;
+                    i = 0;
+                    break;
+
+                } else if(currEvaluation > minEvaluation){
+
+                    cipherTable.swap(i, j);
+
+                } else {
+
+                    System.out.println("WOW");
+
+                }
+
+
+            }
+
+
+        }
+
+        System.out.println("FINISHED!!");
+
+        System.out.println(minEvaluation);
+
+        System.out.println(count);
+
+        return cipherTable.getKey();
 
     }
 
 
-    public double evaluate(File cipherFile) throws FileNotFoundException{
+    public double evaluate(BigramTable cipherTable) throws FileNotFoundException{
 
         double sum = 0;
 
-        BigramTable cipherTable = bigramize(cipherFile);
+        double[][] cipherArray = cipherTable.getMatrix();
 
-        double[][] cipherArray = cipherTable.geMatrix().getArray();
-
-        double[][] trainingArray = trainingTable.geMatrix().getArray();
+        double[][] trainingArray = trainingTable.getMatrix();
 
         for(int i = 0; i < 27; i++){
 
@@ -119,9 +161,7 @@ public class Solver{
 
         }
 
-        Matrix bigramMatrix = new Matrix(freq);
-
-        BigramTable table = new BigramTable(bigramMatrix);
+        BigramTable table = new BigramTable(freq);
 
         return table;
 

@@ -6,21 +6,21 @@ import java.util.Scanner;
 
 public class BigramTable {
     
-    private Matrix matrix;
+    private double[][] matrix;
 
     private char[] key;
 
     public BigramTable(){
 
-        matrix = new Matrix(27, 27);
+        matrix = new double[27][27];
 
         key = new char[27];
 
     }
 
-    public BigramTable(Matrix m){
+    public BigramTable(double[][] matrix){
 
-        matrix = m;
+        this.matrix = matrix;
 
         key = new char[]{
             
@@ -37,9 +37,44 @@ public class BigramTable {
 
     }
 
-    public Matrix geMatrix(){
+    public double[][] getMatrix(){
 
         return matrix;
+
+    }
+
+    public void swap(int i, int j){
+
+        swapRows(i, j);
+        swapCols(i, j);
+
+        char temp = key[i];
+        key[i] = key[j];
+        key[j] = temp;
+
+    }
+
+    private void swapRows(int i, int j) {
+
+        double[] temp = matrix[i];
+
+        matrix[i] = matrix[j];
+
+        matrix[j] = temp;
+
+    }
+
+    private void swapCols(int i, int j){
+
+        for(int z = 0; z < matrix.length; z++){
+
+            double temp = matrix[z][i];
+
+            matrix[z][i] = matrix[z][j];
+    
+            matrix[z][j] = temp;
+
+        }
 
     }
 
@@ -66,7 +101,7 @@ public class BigramTable {
 
             for(int j = 0; j < key.length; j++){
 
-                builder.append(round(matrix.getArray()[i][j], 2));
+                builder.append(round(matrix[i][j], 2));
                 builder.append(" ");
 
             }
