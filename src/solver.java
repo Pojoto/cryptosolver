@@ -69,6 +69,8 @@ public class Solver{
 
         double minEvaluation = evaluate(cipherTable);
 
+        System.out.println("START: " + minEvaluation);
+
         for(int i = 0; i < alphabet.length; i++){
 
             for(int j = i + 1; j < alphabet.length; j++){
@@ -78,7 +80,6 @@ public class Solver{
                 cipherTable.swap(i, j);
 
                 double currEvaluation = evaluate(cipherTable);    
-
 
                 if(currEvaluation < minEvaluation){
 
@@ -92,7 +93,8 @@ public class Solver{
 
                 } else {
 
-                    System.out.println("WOW");
+                    //the evaluations are equal
+                    //System.out.println("I: " + alphabet[i] + " J: " + alphabet[j]);
 
                 }
 
@@ -102,9 +104,11 @@ public class Solver{
 
         }
 
-        System.out.println("FINISHED!!");
+        System.out.println(cipherTable.getKey().toString());
+        
+        System.out.println("EQUAL: " + evaluate(cipherTable));
 
-        System.out.println(minEvaluation);
+        System.out.println("FINAL: " + minEvaluation);
 
         System.out.println(count);
 
@@ -139,6 +143,22 @@ public class Solver{
 
     }
 
+    private boolean contains(char c){
+
+        for(int i = 0; i < alphabet.length; i++){
+
+            if(alphabet[i] == c){
+
+                return true;
+
+            }
+
+        }
+
+        return false;
+
+    }
+
     public BigramTable bigramize(File file) throws FileNotFoundException{
 
         Map<String, Integer> bigramMap = defaultMap();
@@ -155,13 +175,33 @@ public class Solver{
 
                 char char1 = line.charAt(i);
 
-                char char2 = line.charAt(i + 1);
+                if(!contains(char1)){
 
-                String bigram = ("" + char1 + char2).toLowerCase();
+                    i = i + 1;
 
-                bigramMap.put(bigram, bigramMap.get(bigram) + 1);
+                } else {
 
-                count++;
+                    char char2 = line.charAt(i + 1);
+
+                    if(!contains(char2)){
+    
+                        i = i + 2;
+    
+                    } else {
+
+                        String bigram = ("" + char1 + char2).toLowerCase();
+    
+                        bigramMap.put(bigram, bigramMap.get(bigram) + 1);
+        
+                        count++;
+
+                    }
+    
+
+
+                }
+
+
 
             }
             
