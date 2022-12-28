@@ -26,6 +26,12 @@ public class Solver{
 
     };
 
+    // public static char[] alphabet = {
+
+    //     'a', 'b', 'c', 'd'
+
+    // };
+
 
 
     public Solver(File trainingFile) throws FileNotFoundException{ 
@@ -60,8 +66,80 @@ public class Solver{
 
     }
 
+    public String solve1(File cipherFile) throws FileNotFoundException{
 
-    public String solve(File cipherFile) throws FileNotFoundException{
+        int count = 0;
+
+        BigramTable cipherTable = bigramize(cipherFile);
+
+        double minEvaluation = evaluate(cipherTable);
+
+        boolean resume = true;
+
+        System.out.println("START: " + minEvaluation);
+
+        System.out.println(cipherTable.getKey().toString());
+
+        while(resume){
+            
+            double startEvaluation = minEvaluation;
+
+            for(int i = 0; i < alphabet.length; i++){
+
+                for(int j = i + 1; j < alphabet.length; j++){
+
+                    count++;
+
+                    char plaintext1 = alphabet[i];
+
+                    char plaintext2 = alphabet[j];
+    
+                    cipherTable.swap(plaintext1, plaintext2);
+
+                    double currEvaluation = evaluate(cipherTable);
+
+                    if(currEvaluation < minEvaluation){
+
+                        minEvaluation = currEvaluation;
+
+                        System.out.println("SWAP: " + i + " + " + j);
+
+                        System.out.println(minEvaluation);
+
+                        System.out.println(decipher(cipherFile, cipherTable.getKey()) + "\n");
+
+                    } else {
+
+                        cipherTable.swap(plaintext1, plaintext2);
+
+                    }
+
+                }
+
+            }
+
+            if(startEvaluation == minEvaluation){
+
+                resume = false;
+
+            }
+
+            //count++;
+
+        }
+
+        System.out.println("FINAL: " + minEvaluation);
+
+        System.out.println(cipherTable.getKey().toString());
+
+        System.out.println(count);
+
+        return decipher(cipherFile, cipherTable.getKey());
+
+    }
+
+
+    public String solve2(File cipherFile) throws FileNotFoundException{
 
         int count = 0;
 
@@ -71,30 +149,44 @@ public class Solver{
 
         System.out.println("START: " + minEvaluation);
 
+        // System.out.println(cipherTable.toString() + "\n");
+
         for(int i = 0; i < alphabet.length; i++){
 
             for(int j = i + 1; j < alphabet.length; j++){
 
                 count++;
 
-                cipherTable.swap(i, j);
+                char plaintext1 = alphabet[i];
 
-                double currEvaluation = evaluate(cipherTable);    
+                char plaintext2 = alphabet[j];
+
+                cipherTable.swap(plaintext1, plaintext2);
+
+                double currEvaluation = evaluate(cipherTable); 
+                
+                // System.out.println(count);
+                // System.out.println(cipherTable.getKey().toString());
+                // System.out.println(currEvaluation);
+                // System.out.println(cipherTable.toString() + "\n");
 
                 if(currEvaluation < minEvaluation){
 
                     minEvaluation = currEvaluation;
                     i = 0;
+
+                    // System.out.println("^SWAPPED\n");
+
                     break;
 
                 } else if(currEvaluation > minEvaluation){
 
-                    cipherTable.swap(i, j);
+                    cipherTable.swap(plaintext1, plaintext2);
 
                 } else {
 
                     //the evaluations are equal
-                    //System.out.println("I: " + alphabet[i] + " J: " + alphabet[j]);
+                    //System.out.println("I: " + plaintext1 + " J: " + plaintext2);
 
                 }
 
@@ -105,12 +197,14 @@ public class Solver{
         }
 
         System.out.println(cipherTable.getKey().toString());
-        
-        System.out.println("EQUAL: " + evaluate(cipherTable));
 
         System.out.println("FINAL: " + minEvaluation);
 
         System.out.println(count);
+
+        // System.out.println(trainingTable.toString());
+
+        // System.out.println(cipherTable.toString());
 
         return decipher(cipherFile, cipherTable.getKey());
 
@@ -125,9 +219,9 @@ public class Solver{
 
         double[][] trainingArray = trainingTable.getMatrix();
 
-        for(int i = 0; i < 27; i++){
+        for(int i = 0; i < alphabet.length; i++){
 
-            for(int j = 0; j < 27; j++){
+            for(int j = 0; j < alphabet.length; j++){
 
                 double difference = Math.abs(trainingArray[i][j] - cipherArray[i][j]);
 
@@ -143,7 +237,7 @@ public class Solver{
 
     }
 
-    private boolean contains(char c){
+    private boolean alphabetContains(char c){
 
         for(int i = 0; i < alphabet.length; i++){
 
@@ -175,7 +269,7 @@ public class Solver{
 
                 char char1 = line.charAt(i);
 
-                if(!contains(char1)){
+                if(!alphabetContains(char1)){
 
                     i = i + 1;
 
@@ -183,7 +277,7 @@ public class Solver{
 
                     char char2 = line.charAt(i + 1);
 
-                    if(!contains(char2)){
+                    if(!alphabetContains(char2)){
     
                         i = i + 2;
     
@@ -213,7 +307,7 @@ public class Solver{
 
         String[] keys = bigramMap.keySet().toArray(new String[0]); 
 
-        double[][] freq = new double[27][27];
+        double[][] freq = new double[alphabet.length][alphabet.length];
 
         for(int i = 0; i < freq.length; i++){
 

@@ -46,14 +46,34 @@ public class BigramTable {
 
     }
 
-    public void swap(int i, int j){
+    private int indexOfAlphabet(char c){
 
-        swapRows(i, j);
-        swapCols(i, j);
+        for(int i = 0; i < Solver.alphabet.length; i++){
 
-        char temp = key.get(Solver.alphabet[i]);
-        key.put(Solver.alphabet[i], key.get(Solver.alphabet[j]));
-        key.put(Solver.alphabet[j], temp);
+            if(c == Solver.alphabet[i]){
+
+                return i;
+
+            }
+
+        }
+
+        return -1;
+
+    }
+
+    public void swap(char plaintext1, char plaintext2){
+
+        char ciphertext1 = key.get(plaintext1);
+
+        char ciphertext2 = key.get(plaintext2);
+
+        swapRows(indexOfAlphabet(ciphertext1), indexOfAlphabet(ciphertext2));
+        swapCols(indexOfAlphabet(ciphertext1), indexOfAlphabet(ciphertext2));
+
+
+        key.put(plaintext1, ciphertext2);
+        key.put(plaintext2, ciphertext1);
 
     }
 
