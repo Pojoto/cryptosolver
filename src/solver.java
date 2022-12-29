@@ -73,6 +73,9 @@ public class Solver{
         BigramTable cipherTable = bigramize(cipherFile);
 
         double minEvaluation = evaluate(cipherTable);
+        
+        char min1 = alphabet[0];
+        char min2 = alphabet[0];
 
         boolean resume = true;
 
@@ -102,17 +105,19 @@ public class Solver{
 
                         minEvaluation = currEvaluation;
 
-                        System.out.println("SWAP: " + i + " + " + j);
+                        min1 = plaintext1;
+                        min2 = plaintext2;
 
-                        System.out.println(minEvaluation);
+                        // System.out.println("SWAP: " + i + " + " + j);
 
-                        System.out.println(decipher(cipherFile, cipherTable.getKey()) + "\n");
+                        // System.out.println(minEvaluation);
 
-                    } else {
-
-                        cipherTable.swap(plaintext1, plaintext2);
+                        // System.out.println(decipher(cipherFile, cipherTable.getKey()) + "\n");
 
                     }
+
+                    cipherTable.swap(plaintext1, plaintext2);
+
 
                 }
 
@@ -121,6 +126,16 @@ public class Solver{
             if(startEvaluation == minEvaluation){
 
                 resume = false;
+
+            } else {
+
+                cipherTable.swap(min1, min2);
+
+                System.out.println("SWAP: " + min1 + " + " + min2);
+
+                System.out.println(minEvaluation);
+
+                System.out.println(decipher(cipherFile, cipherTable.getKey()) + "\n");
 
             }
 
