@@ -75,7 +75,8 @@ public class Solver{
 
     }
 
-    public String solve3(File cipherFile) throws FileNotFoundException{
+    //simulated annealing
+    public String solve0(File cipherFile) throws FileNotFoundException{
 
         int count = 0;
 
@@ -135,7 +136,7 @@ public class Solver{
 
             }
 
-            temperature = temperature - 0.00001;//* .99999999;
+            temperature = temperature - 0.000001;//* .99999999;
 
 
             // if(startEvaluation == minEvaluation){
@@ -170,97 +171,8 @@ public class Solver{
 
     }
 
-    public String solve0(File cipherFile) throws FileNotFoundException{
 
-        int count = 0;
-
-        BigramTable cipherTable = bigramize(cipherFile);
-
-        double minEvaluation = evaluate(cipherTable);
-        
-        char min1 = alphabet[0];
-        char min2 = alphabet[1];
-
-        //boolean resume = true;
-
-        System.out.println("START: " + minEvaluation);
-
-        System.out.println(cipherTable.getKey().toString());
-
-        while(count < 1000){
-
-            int random1 = (int)(Math.random() * 27);
-            int random2 = (int)(Math.random() * 27);
-            
-            cipherTable.swap(alphabet[random1], alphabet[random2]);
-            double startEvaluation = evaluate(cipherTable);
-
-
-
-            min1 = alphabet[random1];
-            min2 = alphabet[random2];
-            cipherTable.swap(alphabet[random1], alphabet[random2]);
-
-            for(int i = 0; i < alphabet.length; i++){
-
-                for(int j = i + 1; j < alphabet.length; j++){
-
-                    //count++;
-
-                    char plaintext1 = alphabet[i];
-
-                    char plaintext2 = alphabet[j];
-    
-                    cipherTable.swap(plaintext1, plaintext2);
-
-                    double currEvaluation = evaluate(cipherTable);
-
-                    if(currEvaluation < startEvaluation){
-
-                        startEvaluation = currEvaluation;
-
-                        min1 = plaintext1;
-                        min2 = plaintext2;
-
-                        // System.out.println("SWAP: " + i + " + " + j);
-
-                        // System.out.println(minEvaluation);
-
-                        // System.out.println(decipher(cipherFile, cipherTable.getKey()) + "\n");
-
-                    }
-
-                    cipherTable.swap(plaintext1, plaintext2);
-
-
-                }
-
-            }
-
-            cipherTable.swap(min1, min2);
-
-            System.out.println("SWAP: " + cipherTable.getKey().get(min1) + " + " + cipherTable.getKey().get(min2));
-
-            System.out.println(startEvaluation);
-
-            System.out.println(decipher(cipherFile, cipherTable.getKey()) + "\n");
-
-            count++;
-
-        }
-
-        System.out.println("FINAL: " + minEvaluation);
-
-        System.out.println(cipherTable.getKey().toString());
-
-        System.out.println(count);
-
-        return decipher(cipherFile, cipherTable.getKey());
-
-    }
-
-
-
+    //best neighbor hill climbing
     public String solve1(File cipherFile) throws FileNotFoundException{
 
         int count = 0;
@@ -353,7 +265,100 @@ public class Solver{
 
     }
 
+    public String solve3(File cipherFile) throws FileNotFoundException{
 
+        int count = 0;
+
+        BigramTable cipherTable = bigramize(cipherFile);
+
+        double minEvaluation = evaluate2(cipherFile, cipherTable);
+        
+        char min1 = alphabet[0];
+        char min2 = alphabet[1];
+
+        boolean resume = true;
+
+        System.out.println("START: " + minEvaluation);
+        System.out.println(evaluate(cipherTable));
+
+        System.out.println(cipherTable.getKey().toString());
+
+        while(resume){
+            
+            double startEvaluation = minEvaluation;
+
+            for(int i = 0; i < alphabet.length; i++){
+
+                for(int j = i + 1; j < alphabet.length; j++){
+
+                    count++;
+
+                    char plaintext1 = alphabet[i];
+
+                    char plaintext2 = alphabet[j];
+    
+                    cipherTable.swap(plaintext1, plaintext2);
+
+                    double currEvaluation = evaluate2(cipherFile, cipherTable);
+
+                    if(currEvaluation > minEvaluation){
+
+                        minEvaluation = currEvaluation;
+
+                        min1 = plaintext1;
+                        min2 = plaintext2;
+
+                        // System.out.println("SWAP: " + i + " + " + j);
+
+                        // System.out.println(minEvaluation);
+
+                        // System.out.println(decipher(cipherFile, cipherTable.getKey()) + "\n");
+
+                    }
+
+                    cipherTable.swap(plaintext1, plaintext2);
+
+
+                }
+
+            }
+
+            if(startEvaluation == minEvaluation){
+
+                resume = false;
+
+            } else {
+
+                cipherTable.swap(min1, min2);
+
+                System.out.println("SWAP: " + cipherTable.getKey().get(min1) + " + " + cipherTable.getKey().get(min2));
+
+                System.out.println(minEvaluation);
+
+                System.out.println(evaluate(cipherTable));
+
+                System.out.println(decipher(cipherFile, cipherTable.getKey()) + "\n");
+
+            }
+
+            //count++;
+
+        }
+
+        System.out.println("FINAL: " + minEvaluation);
+
+        System.out.println(evaluate(cipherTable));
+
+        System.out.println(cipherTable.getKey().toString());
+
+        System.out.println(count);
+
+        return decipher(cipherFile, cipherTable.getKey());
+
+    }
+
+
+    //better neighbor hill climbing
     public String solve2(File cipherFile) throws FileNotFoundException{
 
         int count = 0;
