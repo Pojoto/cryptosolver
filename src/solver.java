@@ -19,6 +19,7 @@ import java.util.Currency;
 public class Solver{
 
     private BigramTable trainingTable;
+    private HashMap<String, Double> trigramMap;
 
     public static char[] alphabet = {
 
@@ -38,6 +39,7 @@ public class Solver{
     public Solver(File trainingFile) throws FileNotFoundException{ 
 
         trainingTable = bigramize(trainingFile);
+        trigramMap = trigramize(trainingFile);
 
     }
 
@@ -50,6 +52,12 @@ public class Solver{
         while(lineReader.hasNextLine()){
 
             String line = lineReader.nextLine();
+
+            if(line.charAt(line.length() - 1) != ' '){
+
+                line = line + " ";
+
+            }
 
             for(int i = 0; i < line.length(); i++){
 
@@ -74,6 +82,8 @@ public class Solver{
         BigramTable cipherTable = bigramize(cipherFile);
 
         double minEvaluation = evaluate(cipherTable);
+
+        double smallest = minEvaluation;
         
         char min1 = alphabet[0];
         char min2 = alphabet[1];
@@ -84,7 +94,7 @@ public class Solver{
 
         System.out.println(cipherTable.getKey().toString());
 
-        double temperature = 100;
+        double temperature = 1.1;
 
         while(temperature > 1){
 
@@ -105,11 +115,17 @@ public class Solver{
 
             //System.out.println(currEvaluation);
 
+            if(currEvaluation < smallest){
+
+                smallest = currEvaluation;
+
+            }
+
             if(currEvaluation < minEvaluation){
 
                 minEvaluation = currEvaluation;
 
-            } else if(Math.pow(Math.E, -(difference / temperature)) >= Math.random()){
+            } else if(Math.pow(Math.E, -(difference / temperature)) < Math.random()){
 
                 minEvaluation = currEvaluation;
 
@@ -119,7 +135,7 @@ public class Solver{
 
             }
 
-            temperature = temperature * .999999;
+            temperature = temperature - 0.00001;//* .99999999;
 
 
             // if(startEvaluation == minEvaluation){
@@ -147,6 +163,8 @@ public class Solver{
         System.out.println(cipherTable.getKey().toString());
 
         System.out.println(count);
+
+        System.out.println(smallest);
 
         return decipher(cipherFile, cipherTable.getKey());
 
@@ -257,6 +275,7 @@ public class Solver{
         boolean resume = true;
 
         System.out.println("START: " + minEvaluation);
+        System.out.println(evaluate2(cipherFile, cipherTable));
 
         System.out.println(cipherTable.getKey().toString());
 
@@ -312,6 +331,8 @@ public class Solver{
 
                 System.out.println(minEvaluation);
 
+                System.out.println(evaluate2(cipherFile, cipherTable));
+
                 System.out.println(decipher(cipherFile, cipherTable.getKey()) + "\n");
 
             }
@@ -321,6 +342,8 @@ public class Solver{
         }
 
         System.out.println("FINAL: " + minEvaluation);
+
+        System.out.println(evaluate2(cipherFile, cipherTable));
 
         System.out.println(cipherTable.getKey().toString());
 
@@ -402,7 +425,6 @@ public class Solver{
 
     }
 
-
     public double evaluate(BigramTable cipherTable) throws FileNotFoundException{
 
         double sum = 0;
@@ -429,6 +451,30 @@ public class Solver{
 
     }
 
+    public double evaluate2(File cipherFile, BigramTable cipherTable) throws FileNotFoundException{
+
+        String text = decipher(cipherFile, cipherTable.getKey());
+
+        double sum = 0;
+
+        for(int i = 0; i < text.length() - 2; i++){
+
+            char char1 = text.charAt(i);
+            char char2 = text.charAt(i + 1);
+            char char3 = text.charAt(i + 2);
+
+            String trigram = "" + char1 + char2 + char3;
+
+            double result = trigramMap.containsKey(trigram) ? trigramMap.get(trigram) : 0;
+
+            sum = sum + result;
+
+        }
+
+        return sum;
+
+    }
+
     private boolean alphabetContains(char c){
 
         for(int i = 0; i < alphabet.length; i++){
@@ -445,6 +491,67 @@ public class Solver{
 
     }
 
+    public HashMap<String, Double> trigramize(File file) throws FileNotFoundException{
+
+        HashMap<String, Double> trigramMap = new HashMap<String, Double>();
+
+        int count = 0;
+
+        Scanner lineReader = new Scanner(file);
+
+        while(lineReader.hasNextLine()){
+
+            String line = " " + lineReader.nextLine();
+
+            if(line.charAt(line.length() - 1) != ' '){
+
+                line = line + " ";
+
+            }
+
+            count += line.length();
+
+        }
+
+        count -= 2;
+
+        lineReader.close();
+
+        Scanner lineReader2 = new Scanner(file);
+
+        while(lineReader2.hasNextLine()){
+
+            String line = " " + lineReader2.nextLine();
+
+            if(line.charAt(line.length() - 1) != ' '){
+
+                line = line + " ";
+
+            }
+
+            for(int i = 0; i < line.length() - 2; i++){
+
+                char char1 = line.charAt(i);
+                char char2 = line.charAt(i + 1);
+                char char3 = line.charAt(i + 2);
+
+                String trigram = ("" + char1 + char2 + char3).toLowerCase();
+
+                double unit = 1.0 / count;
+
+                trigramMap.put(trigram, trigramMap.containsKey(trigram) ? trigramMap.get(trigram) + unit : unit);
+
+
+            }
+
+        }
+
+        lineReader2.close();
+
+        return trigramMap;
+
+    }
+
     public BigramTable bigramize(File file) throws FileNotFoundException{
 
         Map<String, Integer> bigramMap = defaultMap();
@@ -455,40 +562,26 @@ public class Solver{
 
         while(lineReader.hasNextLine()){
 
-            String line = lineReader.nextLine();
+            String line = " " + lineReader.nextLine();
+
+            if(line.charAt(line.length() - 1) != ' '){
+
+                line = line + " ";
+
+            }
 
             for(int i = 0; i < line.length() - 1; i++){
 
                 char char1 = line.charAt(i);
 
-                if(!alphabetContains(char1)){
+                char char2 = line.charAt(i + 1);
 
-                    i = i + 1;
+                String bigram = ("" + char1 + char2).toLowerCase();
 
-                } else {
+                bigramMap.put(bigram, bigramMap.get(bigram) + 1);
 
-                    char char2 = line.charAt(i + 1);
-
-                    if(!alphabetContains(char2)){
-    
-                        i = i + 2;
-    
-                    } else {
-
-                        String bigram = ("" + char1 + char2).toLowerCase();
-    
-                        bigramMap.put(bigram, bigramMap.get(bigram) + 1);
-        
-                        count++;
-
-                    }
-    
-
-
-                }
-
-
-
+                count++;
+            
             }
             
         }
