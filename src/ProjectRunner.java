@@ -20,7 +20,7 @@ public class ProjectRunner {
 
         //char[] key = solver.solve(ciphertext);    
 
-        System.out.println(solver.solve1(ciphertext));
+        System.out.println(solver.solve5(ciphertext));
 
     }
 
