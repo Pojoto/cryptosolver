@@ -1,1 +1,1 @@
-Next time we will look at another application of our truncated corpus cryptanalysis In particular we will make an effort to break substitution ciphers via a local search method In the not so near future we also plan to investigate some other aspects of information representation One idea which seems promising is to model a document as a point in some high dimensional space perhaps each dimension corresponds to a count of a particular
+Abfhfg sr sjitc afpoasaver ae ntga mffo er hfgfshybvrd Abfhf yepfg s oevra jbfhf xet ntga bskf ae gaeo srl gasha jhvavrd
