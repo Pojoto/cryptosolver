@@ -1,5 +1,4 @@
 # cryptosolver
-hi
 
 [cryptogram solver for simple subsitution ciphers]
 
